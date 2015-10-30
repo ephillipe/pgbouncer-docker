@@ -7,7 +7,7 @@ MAINTAINER Erick Almeida <ephillipe@gmail.com>
 # Install build dependencies
 RUN apt-get update \
     && apt-get install -y \
-       build-essential libevent-dev ca-certificates curl
+       build-essential libevent-dev ca-certificates curl \
     && apt-get -q -y clean 
     
 EXPOSE 5432
@@ -15,7 +15,7 @@ EXPOSE 5432
 RUN groupadd -r pgbouncer && useradd -r -g pgbouncer pgbouncer
 
 ENV PGBOUNCER_VERSION 1.6.1
-ENV PGBOUNCER_URL https://apt.postgresql.org/pub/projects/pgFoundry/pgbouncer/pgbouncer/${PGBOUNCER_VERSION}/pgbouncer-${PGBOUNCER_VERSION}.tar.gz
+ENV PGBOUNCER_URL http://pgbouncer.github.io/downloads/files/${PGBOUNCER_VERSION}/pgbouncer-${PGBOUNCER_VERSION}.tar.gz
 
 # Get PgBouncer source code
 RUN curl -SLO ${PGBOUNCER_URL} \
@@ -28,6 +28,7 @@ RUN cd pgbouncer-${PGBOUNCER_VERSION} \
   && make \
   && make install
 
-ADD pgbouncer.ini pgbouncer.ini
+ADD pgbouncer.ini /var/app/pgbouncer/pgbouncer.ini
+ADD auth_file.ini /var/app/pgbouncer/auth_file.ini
 
-CMD pgbouncer pgbouncer.ini    
+CMD pgbouncer /var/app/pgbouncer/pgbouncer.ini    
