@@ -31,4 +31,7 @@ RUN cd pgbouncer-${PGBOUNCER_VERSION} \
 ADD pgbouncer.ini /var/app/pgbouncer/pgbouncer.ini
 ADD auth_file.ini /var/app/pgbouncer/auth_file.ini
 
+RUN chown pgbouncer:pgbouncer /var/app/pgbouncer/ -R \
+ 	&& chmod a+w /var/log -R
+
 CMD pgbouncer /var/app/pgbouncer/pgbouncer.ini    
