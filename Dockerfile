@@ -14,7 +14,7 @@ EXPOSE 5432
 
 RUN groupadd -r pgbouncer && useradd -r -g pgbouncer pgbouncer
 
-ENV PGBOUNCER_VERSION 1.6.1
+ENV PGBOUNCER_VERSION 1.7
 ENV PGBOUNCER_URL http://pgbouncer.github.io/downloads/files/${PGBOUNCER_VERSION}/pgbouncer-${PGBOUNCER_VERSION}.tar.gz
 
 # Get PgBouncer source code
