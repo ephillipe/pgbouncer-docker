@@ -35,4 +35,4 @@ RUN chown pgbouncer:pgbouncer /var/app/pgbouncer/ -R \
  	&& chmod a+w /var/log -R \
 	&& chmod a+w /var/run -R
 
-CMD pgbouncer /var/app/pgbouncer/pgbouncer.ini    
+CMD pgbouncer /var/app/pgbouncer/pgbouncer.ini
