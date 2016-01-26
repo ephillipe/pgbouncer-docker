@@ -7,7 +7,7 @@ MAINTAINER Erick Almeida <ephillipe@gmail.com>
 # Install build dependencies
 RUN apt-get update \
     && apt-get install -y \
-       build-essential libevent-dev ca-certificates curl \
+       build-essential libevent-dev ca-certificates curl openssl libc-ares-dev libssl-dev \
     && apt-get -q -y clean 
     
 EXPOSE 5432
@@ -19,12 +19,12 @@ ENV PGBOUNCER_URL http://pgbouncer.github.io/downloads/files/${PGBOUNCER_VERSION
 
 # Get PgBouncer source code
 RUN curl -SLO ${PGBOUNCER_URL} \
-  && tar -xzf pgbouncer-${PGBOUNCER_VERSION}.tar.gz \
+  && tar -xzf pgbouncer-${PGBOUNCER_VERSION}.tar.gz \  
   && chown root:root pgbouncer-${PGBOUNCER_VERSION}
 
 # Configure, make, and install
 RUN cd pgbouncer-${PGBOUNCER_VERSION} \
-  && ./configure --prefix=/usr/local --with-libevent=libevent-prefix \
+  && ./configure --prefix=/usr/local --with-cares --with-openssl \
   && make \
   && make install
 
