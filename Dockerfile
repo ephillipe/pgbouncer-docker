@@ -1,5 +1,4 @@
 FROM debian:jessie
-
 MAINTAINER Erick Almeida <ephillipe@gmail.com>
 
 ENV BUILD_PACKAGES="build-essential automake autoconf libtool autotools-dev pkg-config libevent-dev ca-certificates curl git libc-ares-dev libssl-dev unzip"
