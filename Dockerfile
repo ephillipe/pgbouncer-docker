@@ -6,8 +6,9 @@ ENV RUNTIME_PACKAGES="openssl"
 
 # all the apt-gets in one command & delete the cache after installing
 # Install build dependencies
-RUN apt-get update \
-    && apt-get install -y $BUILD_PACKAGES $RUNTIME_PACKAGES && \
+RUN apt-get update && \
+	apt-get upgrade -y && \
+    apt-get install -y $BUILD_PACKAGES $RUNTIME_PACKAGES && \
     apt-get clean -y && \
 	apt-get autoclean -y && \
 	apt-get autoremove -y && \
@@ -29,15 +30,7 @@ RUN cd /tmp && \
 	./configure --prefix=/usr/local --with-cares --with-openssl && \
 	make && \
 	make install && \
-	rm -f -R /tmp/pgbouncer && \
-	apt-get remove --purge -y $BUILD_PACKAGES&& \
-    apt-get clean -y && \
-	apt-get autoclean -y && \
-	apt-get autoremove -y && \
-	rm -rf /usr/share/locale/* && \
-	rm -rf /var/cache/debconf/*-old && \
-	rm -rf /var/lib/apt/lists/* && \
-	rm -rf /usr/share/doc/*
+	rm -f -R /tmp/pgbouncer
 
 ADD pgbouncer.ini /var/app/pgbouncer/pgbouncer.ini
 ADD auth_file.ini /var/app/pgbouncer/auth_file.ini
