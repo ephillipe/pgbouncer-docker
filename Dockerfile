@@ -2,31 +2,43 @@ FROM debian:jessie
 
 MAINTAINER Erick Almeida <ephillipe@gmail.com>
 
-# all the apt-gets in one command & delete the cache after installing
+ENV BUILD_PACKAGES="build-essential automake autoconf libtool autotools-dev pkg-config libevent-dev ca-certificates curl git libc-ares-dev libssl-dev unzip"
+ENV RUNTIME_PACKAGES="openssl"
 
+# all the apt-gets in one command & delete the cache after installing
 # Install build dependencies
 RUN apt-get update \
-    && apt-get install -y \
-       build-essential libevent-dev ca-certificates curl openssl libc-ares-dev libssl-dev \
-    && apt-get -q -y clean 
+    && apt-get install -y $BUILD_PACKAGES $RUNTIME_PACKAGES && \
+    apt-get clean -y && \
+	apt-get autoclean -y && \
+	apt-get autoremove -y && \
+	rm -rf /usr/share/locale/* && \
+	rm -rf /var/cache/debconf/*-old && \
+	rm -rf /var/lib/apt/lists/* && \
+	rm -rf /usr/share/doc/*
     
 EXPOSE 5432
 
 RUN groupadd -r pgbouncer && useradd -r -g pgbouncer pgbouncer
 
-ENV PGBOUNCER_VERSION 1.7
-ENV PGBOUNCER_URL http://pgbouncer.github.io/downloads/files/${PGBOUNCER_VERSION}/pgbouncer-${PGBOUNCER_VERSION}.tar.gz
-
-# Get PgBouncer source code
-RUN curl -SLO ${PGBOUNCER_URL} \
-  && tar -xzf pgbouncer-${PGBOUNCER_VERSION}.tar.gz \  
-  && chown root:root pgbouncer-${PGBOUNCER_VERSION}
-
-# Configure, make, and install
-RUN cd pgbouncer-${PGBOUNCER_VERSION} \
-  && ./configure --prefix=/usr/local --with-cares --with-openssl \
-  && make \
-  && make install
+RUN cd /tmp && \
+    git clone https://github.com/ephillipe/pgbouncer.git && \
+	cd pgbouncer && \
+	git submodule init && \
+	git submodule update && \
+	./autogen.sh && \
+	./configure --prefix=/usr/local --with-cares --with-openssl && \
+	make && \
+	make install && \
+	rm -f -R /tmp/pgbouncer && \
+	apt-get remove --purge -y $BUILD_PACKAGES&& \
+    apt-get clean -y && \
+	apt-get autoclean -y && \
+	apt-get autoremove -y && \
+	rm -rf /usr/share/locale/* && \
+	rm -rf /var/cache/debconf/*-old && \
+	rm -rf /var/lib/apt/lists/* && \
+	rm -rf /usr/share/doc/*
 
 ADD pgbouncer.ini /var/app/pgbouncer/pgbouncer.ini
 ADD auth_file.ini /var/app/pgbouncer/auth_file.ini
