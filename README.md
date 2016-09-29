@@ -1,1 +1,1 @@
-# pgbouncer-docker
+# pgbouncer-docker [![](https://images.microbadger.com/badges/image/ephillipe/pgbouncer-docker.svg)](https://microbadger.com/images/ephillipe/pgbouncer-docker "Get your own image badge on microbadger.com")
